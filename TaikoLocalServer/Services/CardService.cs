@@ -3,6 +3,7 @@ using GameDatabase.Entities;
 using OneOf.Types;
 using SharedProject.Models;
 using Swan.Mapping;
+using TaikoLocalServer.Services.Interfaces;
 
 namespace TaikoLocalServer.Services;
 
@@ -28,6 +29,9 @@ public class CardService : ICardService
 	public async Task<List<User>> GetUsersFromCards()
 	{
 		var cardEntries = await context.Cards.ToListAsync();
+		var usersData = await context.UserData.ToListAsync();
+		var name = "";
+
 		List<User> users = new();
 		var found = false;
 		foreach (var cardEntry in cardEntries)
@@ -40,10 +44,16 @@ public class CardService : ICardService
 
 			if (!found)
 			{
-				var user = new User
+                foreach (var userdata in usersData.Where(userdata => userdata.Baid == cardEntry.Baid))
+                {
+                    name = userdata.MyDonName;
+                }
+
+                var user = new User
 				{
 					Baid = (uint)cardEntry.Baid,
-					AccessCodes = new List<string> {cardEntry.AccessCode}
+					Name = name,
+                    AccessCodes = new List<string> {cardEntry.AccessCode}
 				};
 				users.Add(user);
 			}
