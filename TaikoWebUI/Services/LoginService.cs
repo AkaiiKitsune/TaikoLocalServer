@@ -16,6 +16,9 @@ public class LoginService
     public bool AllowUserDelete { get; }
     public bool AllowFreeProfileEditing { get; }
 
+    private string NewCardUID = "";
+    private bool NewCardFormat = false;
+
     public LoginService(IOptions<WebUiSettings> settings)
     {
         IsLoggedIn = false;
@@ -34,6 +37,44 @@ public class LoginService
     public bool IsLoggedIn { get; private set; }
     private User LoggedInUser { get; set; } = new();
     public bool IsAdmin { get; private set; }
+
+    static string PadLeftWithZeros(string input, int desiredLength)
+    {
+        int zerosToAdd = Math.Max(0, desiredLength - input.Length);
+        return new string('0', zerosToAdd) + input;
+    }
+
+    public string ConvertOldUID(string inputCardNum, DashboardResponse response)
+    {
+        // Convert hexadecimal string to a byte array
+        try
+        {
+            byte[] byteArray = new byte[inputCardNum.Length / 2];
+            for (int i = 0; i < inputCardNum.Length; i += 2)
+            {
+                byteArray[i / 2] = Convert.ToByte(inputCardNum.Substring(i, 2), 16);
+            }
+
+            // Reverse the array if needed (depends on endianness)
+            Array.Reverse(byteArray);
+
+            // Convert byte array to an unsigned long integer
+            string convertedNumber = PadLeftWithZeros(BitConverter.ToUInt64(byteArray, 0).ToString(), 20);
+
+            //Console.WriteLine($"Hexadecimal: {inputCardNum}");
+            //Console.WriteLine($"Decimal: {convertedNumber}");
+
+            NewCardUID = convertedNumber;
+            foreach (var user in response.Users.Where(user => user.AccessCodes.Contains(NewCardUID)))
+            {
+                NewCardFormat = true;
+                Console.WriteLine($"This is a new card ! : {inputCardNum} used to be {convertedNumber}");
+                return convertedNumber;
+            }
+        }
+        finally { }
+        return "";
+    }
 
     public int Login(string inputCardNum, string inputPassword, DashboardResponse response)
     {
@@ -65,7 +106,7 @@ public class LoginService
         DashboardResponse response, HttpClient client)
     {
         if (OnlyAdmin) return 0;
-        
+
         foreach (var user in response.Users.Where(user => user.AccessCodes.Contains(inputCardNum)))
         {
             foreach (var userCredential in response.UserCredentials.Where(userCredential => userCredential.Baid == user.Baid))
@@ -155,7 +196,7 @@ public class LoginService
     {
         return LoggedInUser;
     }
-    
+
     public void ResetLoggedInUser(DashboardResponse? response)
     {
         if (response is null) return;
@@ -164,7 +205,7 @@ public class LoginService
         if (newLoggedInUser is null) return;
         LoggedInUser = newLoggedInUser;
     }
-    
+
     public async Task<int> BindAccessCode(string inputAccessCode, HttpClient client)
     {
         if (inputAccessCode.Trim() == "") return 4;

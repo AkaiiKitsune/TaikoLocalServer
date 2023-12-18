@@ -43,7 +43,9 @@ public partial class Users
     {
         if (response != null)
         {
-            var result = LoginService.Login(inputAccessCode, inputPassword, response);
+            var oldUID = LoginService.ConvertOldUID(inputAccessCode, response);
+            var result = LoginService.Login(oldUID == "" ? inputAccessCode : oldUID, inputPassword, response);
+
             switch (result)
             {
                 case 0:
@@ -54,7 +56,13 @@ public partial class Users
                     await loginForm.ResetAsync();
                     break;
                 case 1:
-                    NavigationManager.NavigateTo("/Users");
+                    StateContainer.currentUser = LoginService.GetLoggedInUser();
+                    if (oldUID != "")
+                    {
+                        Console.WriteLine("Binding " + inputAccessCode);
+                        await LoginService.BindAccessCode(inputAccessCode, Client);
+                    }
+                    NavigationManager.NavigateTo($"/Users/{StateContainer.currentUser.Baid}/Profile");
                     break;
                 case 2:
                     await DialogService.ShowMessageBox(
