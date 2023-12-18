@@ -1,4 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@inject StateContainer StateContainer
+@inject LoginService LoginService
+@inject NavigationManager NavigationManager
 
 <MudThemeProvider/>
 <MudDialogProvider/>
@@ -7,6 +10,16 @@
 <MudLayout>
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+        <MudSpacer />
+        @if (StateContainer.isConnected)
+        {
+            <MudMenu TransformOrigin=@Origin.TopRight AnchorOrigin=@Origin.BottomRight Color="Color.Inherit" Icon="@Icons.Material.Filled.MoreVert">
+                <MudMenuItem Icon="@Icons.Material.Filled.Person" OnClick="@((e) => EditProfile())">Game Profile</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.CreditCard" OnClick="@((e) => EditCard())">Access Codes</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Build" OnClick="@((e) => EditPass())">Edit Password</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error" OnClick="@((e) => OnLogout())">Logout</MudMenuItem>
+            </MudMenu>
+        }
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
         <MudDrawerHeader>
@@ -19,13 +32,43 @@
             @Body
 
             <MudScrollToTop>
-                <MudFab Color="Color.Secondary" Icon="@Icons.Material.Filled.ArrowCircleUp" />
+                <MudFab Color="Color.Secondary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" />
             </MudScrollToTop>
         </MudContainer>
     </MudMainContent>
 </MudLayout>
 
 @code {
+    protected override void OnInitialized()
+    {
+        StateContainer.isConnected = false;
+        StateContainer.OnChange += StateHasChanged;
+    }
+
+    private void EditProfile()
+    {
+        NavigationManager.NavigateTo("/Users/" + StateContainer.currentUser.Baid + "/Profile");
+    }
+
+    private void EditCard()
+    {
+        NavigationManager.NavigateTo("/Users/"+StateContainer.currentUser.Baid+"/AccessCode");
+    }
+
+    private void EditPass()
+    {
+        NavigationManager.NavigateTo("/Users/ChangePassword");
+    }
+
+    private void OnLogout()
+    {
+        LoginService.Logout();
+        StateContainer.isConnected = false;
+        NavigationManager.NavigateTo("/Users", forceLoad: true);
+    }
+
+    bool isConnected = false;
+
     bool _drawerOpen = true;
 
     void DrawerToggle()

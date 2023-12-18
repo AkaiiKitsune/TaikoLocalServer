@@ -2,6 +2,7 @@
 @inject IDialogService DialogService
 @inject LoginService LoginService
 @inject NavigationManager NavigationManager
+@inject StateContainer StateContainer
 
 @page "/Users"
 
@@ -14,14 +15,14 @@
             <MudItem xs="12" md="6" lg="4">
                 <MudCard Outlined="true">
                     <MudCardContent>
-                        <MudSkeleton Width="30%" Height="42px;" Class="mb-5"/>
-                        <MudSkeleton Width="80%"/>
-                        <MudSkeleton Width="100%"/>
+                        <MudSkeleton Width="30%" Height="42px;" Class="mb-5" />
+                        <MudSkeleton Width="80%" />
+                        <MudSkeleton Width="100%" />
                     </MudCardContent>
                     <MudCardActions>
                         <MudStack Row="true" Style="width:100%" Spacing="4" Justify="Justify.FlexEnd">
-                            <MudSkeleton Width="64px" Height="40px"/>
-                            <MudSkeleton Width="64px" Height="40px"/>
+                            <MudSkeleton Width="64px" Height="40px" />
+                            <MudSkeleton Width="64px" Height="40px" />
                         </MudStack>
                     </MudCardActions>
                 </MudCard>
@@ -63,7 +64,7 @@
                                     </MudMenuItem>
                                     @if (LoginService.AllowUserDelete)
                                     {
-                                        <MudDivider/>
+                                        <MudDivider />
                                         <MudMenuItem Icon="@Icons.Material.Filled.Delete"
                                                      OnClick="@(_ => DeleteUser(user))"
                                                      IconColor="@Color.Error">
@@ -76,9 +77,9 @@
                         <MudCardContent>
                             <MudText Style="font-weight:bold">Access Code</MudText>
                             <MudText Style="font-family:monospace;overflow:hidden;overflow-x:scroll">@user.AccessCodes[0]</MudText>
-                            @if (user.AccessCodes.Count > 1)
+                                @if (user.AccessCodes.Count > 1)
                             {
-                                <MudText Style="font-family:monospace;overflow:hidden;overflow-x:scroll">... and @(user.AccessCodes.Count-1) other access code(s)</MudText>
+                                <MudText Style="font-family:monospace;overflow:hidden;overflow-x:scroll">... and @(user.AccessCodes.Count - 1) other access code(s)</MudText>
                             }
                         </MudCardContent>
                         <MudCardActions>
@@ -119,7 +120,7 @@
                                         <MudText Typo="Typo.h4" Align="Align.Center">Login</MudText>
                                         <MudTextField @bind-value="inputAccessCode" InputType="InputType.Text" T="string"
                                                       FullWidth="true" Required="@true" RequiredError="Access code is required"
-                                                      Label="Access code"/>
+                                                      Label="Access code" />
                                         <MudTextField @bind-Value="inputPassword" InputType="InputType.Password"
                                                       T="string" FullWidth="true" Required="@true"
                                                       RequiredError="Password is required"
@@ -171,7 +172,7 @@
                                         </MudMenuItem>
                                         @if (LoginService.AllowUserDelete)
                                         {
-                                            <MudDivider/>
+                                            <MudDivider />
                                             <MudMenuItem Icon="@Icons.Material.Filled.Delete"
                                                          OnClick="@(_ => DeleteUser(user))"
                                                          IconColor="@Color.Error">
@@ -184,9 +185,9 @@
                             <MudCardContent>
                                 <MudText Style="font-weight:bold">Access Code</MudText>
                                 <MudText Style="font-family:monospace;overflow:hidden;overflow-x:scroll">@user.AccessCodes[0]</MudText>
-                                @if (user.AccessCodes.Count > 1)
+                                    @if (user.AccessCodes.Count > 1)
                                 {
-                                    <MudText Style="font-family:monospace;overflow:hidden;overflow-x:scroll">... and @(user.AccessCodes.Count-1) other access code(s)</MudText>
+                                    <MudText Style="font-family:monospace;overflow:hidden;overflow-x:scroll">... and @(user.AccessCodes.Count - 1) other access code(s)</MudText>
                                 }
                             </MudCardContent>
                             <MudCardActions>
