@@ -279,8 +279,8 @@ public class GameDataService : IGameDataService
 
             var musicSongId = music.SongId;
             var musicDetail = music.CopyPropertiesToNew<MusicDetail>();
-            musicDetail.SongName = musicName.JapaneseText;
-            musicDetail.ArtistName = musicArtist.JapaneseText;
+            musicDetail.SongName = musicName.EnglishUsText;
+            musicDetail.ArtistName = musicArtist.EnglishUsText;
 
             musicMap.TryAdd(musicSongId, musicDetail);
         }

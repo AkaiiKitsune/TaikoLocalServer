@@ -3,6 +3,7 @@ using GameDatabase.Entities;
 using OneOf.Types;
 using SharedProject.Models;
 using Swan.Mapping;
+using TaikoLocalServer.Services.Interfaces;
 
 namespace TaikoLocalServer.Services;
 
@@ -33,7 +34,8 @@ public class CardService : ICardService
 		{
 			Baid = (uint)userEntry.Baid,
 			AccessCodes = cardEntries.Where(cardEntry => cardEntry.Baid == userEntry.Baid).Select(cardEntry => cardEntry.AccessCode).ToList(),
-			IsAdmin = userEntry.IsAdmin
+			Name = userEntry.MyDonName,
+            IsAdmin = userEntry.IsAdmin
 		}).ToList();
 		return users;
 	}
@@ -43,7 +45,7 @@ public class CardService : ICardService
 		context.Add(card);
 		await context.SaveChangesAsync();
 	}
-	
+
 	public async Task<bool> DeleteCard(string accessCode)
 	{
 		var card = await context.Cards.FindAsync(accessCode);
