@@ -4,7 +4,7 @@
 @inject LoginService LoginService
 @inject NavigationManager NavigationManager
 
-<MudBreadcrumbs Items="breadcrumbs" Class="px-0"></MudBreadcrumbs>
+@* <MudBreadcrumbs Items="breadcrumbs" Class="px-0"></MudBreadcrumbs> *@
 
 <h1>Access Code Management</h1>
 <MudText Typo="Typo.caption">User: @Baid</MudText>
@@ -65,11 +65,11 @@ else
                     <MudCard Outlined="true">
                         <MudCardHeader>
                             <CardHeaderContent>
-                                <MudText Typo="Typo.h6" Style="font-weight:bold">User Access Code @localIdx</MudText>
+                                <MudText Typo="Typo.h6" Style="font-weight:bold">Access Code @localIdx</MudText>
                             </CardHeaderContent>
                         </MudCardHeader>
                         <MudCardContent>
-                            <MudText Style="font-weight:bold">@accessCode</MudText>
+                            <MudText>@accessCode</MudText>
                         </MudCardContent>
                         <MudCardActions>
                             <MudButton OnClick="@(_ => DeleteAccessCode(accessCode))"
