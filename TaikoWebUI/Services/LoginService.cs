@@ -42,6 +42,8 @@ public class LoginService
     public string ConvertOldUID(string inputCardNum, DashboardResponse response)
     {
         // Convert hexadecimal string to a byte array
+        inputCardNum = inputCardNum.ToUpper().Trim();
+        Console.WriteLine(inputCardNum);
         try
         {
             byte[] byteArray = new byte[inputCardNum.Length / 2];
@@ -66,7 +68,7 @@ public class LoginService
                 return convertedNumber;
             }
         }
-        finally { }
+        catch { }
         return "";
     }
 

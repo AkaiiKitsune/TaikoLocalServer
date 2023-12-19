@@ -25,7 +25,10 @@ public partial class Register
         var inputDateTime = date!.Value.Date + time!.Value;
         if (response != null)
         {
-            var result = await LoginService.Register(accessCode, inputDateTime, password, confirmPassword, response, Client);
+            //Checking if the Card the player used is a real UID that corresponds to the value used to be stored in the DB.
+            accessCode = accessCode.ToUpper().Trim();
+            var oldUID = LoginService.ConvertOldUID(accessCode, response);
+            var result = await LoginService.Register(oldUID == "" ? accessCode : oldUID, inputDateTime, password, confirmPassword, response, Client);
             switch (result)
             {
                 case 0:

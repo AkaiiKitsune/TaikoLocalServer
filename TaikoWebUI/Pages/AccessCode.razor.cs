@@ -67,7 +67,7 @@ public partial class AccessCode
     {
         if (response != null)
         {
-            var result = await LoginService.BindAccessCode(inputAccessCode, response.Users.First(u => u.Baid == Baid), Client);
+            var result = await LoginService.BindAccessCode(inputAccessCode.ToUpper().Trim(), response.Users.First(u => u.Baid == Baid), Client);
             switch (result)
             {
                 case 0:

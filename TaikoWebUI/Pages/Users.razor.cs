@@ -1,4 +1,5 @@
-﻿using TaikoWebUI.Pages.Dialogs;
+﻿using SharedProject.Models;
+using TaikoWebUI.Pages.Dialogs;
 
 namespace TaikoWebUI.Pages;
 
@@ -36,7 +37,7 @@ public partial class Users
         if (result.Canceled) return;
 
         response = await Client.GetFromJsonAsync<DashboardResponse>("api/Dashboard");
-        OnLogout();
+        if(user.Baid == LoginService.GetLoggedInUser().Baid) await OnLogout();
     }
 
     private async Task ResetPassword(User user)
@@ -67,6 +68,7 @@ public partial class Users
         if (response != null)
         {
             //Checking if the Card the player used is a real UID that corresponds to the value used to be stored in the DB.
+            inputAccessCode = inputAccessCode.ToUpper().Trim();
             var oldUID = LoginService.ConvertOldUID(inputAccessCode, response);
             var result = LoginService.Login(oldUID == "" ? inputAccessCode : oldUID, inputPassword, response);
 
@@ -81,6 +83,8 @@ public partial class Users
                     break;
                 case 1:
                     StateContainer.currentUser = LoginService.GetLoggedInUser();
+                    await LocalStorage.SaveStringAsync("user", inputAccessCode);
+                    await LocalStorage.SaveStringAsync("pass", inputPassword);
                     //If the card given is a real UID that corresponds to a converted card, bind it to the user so they can authenticate with it on the webui
                     if (oldUID != "")
                     {
@@ -115,9 +119,11 @@ public partial class Users
         }
     }
 
-    private void OnLogout()
+    private async Task OnLogout()
     {
         LoginService.Logout();
+        await LocalStorage.RemoveAsync("user");
+        await LocalStorage.RemoveAsync("pass");
         NavigationManager.NavigateTo("/Users");
     }
     

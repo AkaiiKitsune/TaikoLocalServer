@@ -1,7 +1,9 @@
 ﻿@inherits LayoutComponentBase
+@inject HttpClient Client
 @inject StateContainer StateContainer
 @inject LoginService LoginService
 @inject NavigationManager NavigationManager
+@inject ILocalStorage LocalStorage
 
 <MudThemeProvider/>
 <MudDialogProvider/>
@@ -39,10 +41,40 @@
 </MudLayout>
 
 @code {
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        StateContainer.isConnected = false;
         StateContainer.OnChange += StateHasChanged;
+        var user = await LocalStorage.GetStringAsync("user");
+        var pass = await LocalStorage.GetStringAsync("pass");
+        var saved = !string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(pass);
+        if (saved)
+        {
+
+            var response = await Client.GetFromJsonAsync<DashboardResponse>("api/Dashboard");
+            response.ThrowIfNull();
+            var loginStatus = LoginService.Login(user, pass, response);
+
+            if (loginStatus == 1)
+            {
+                StateContainer.currentUser = LoginService.GetLoggedInUser();
+                StateContainer.isConnected = true;
+                NavigationManager.NavigateTo("/Users");
+            }
+            else
+            {
+                StateContainer.isConnected = false;
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
+
+    protected async Task OnLogout()
+    {
+        LoginService.Logout();
+        StateContainer.isConnected = false;
+        await LocalStorage.RemoveAsync("user");
+        await LocalStorage.RemoveAsync("pass");
+        NavigationManager.NavigateTo("/Users", forceLoad: true);
     }
 
     private void EditProfile()
@@ -58,13 +90,6 @@
     private void EditPass()
     {
         NavigationManager.NavigateTo("/Users/ChangePassword");
-    }
-
-    private void OnLogout()
-    {
-        LoginService.Logout();
-        StateContainer.isConnected = false;
-        NavigationManager.NavigateTo("/Users", forceLoad: true);
     }
 
     bool _drawerOpen = true;
