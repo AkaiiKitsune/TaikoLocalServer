@@ -66,6 +66,7 @@ public partial class Users
     {
         if (response != null)
         {
+            //Checking if the Card the player used is a real UID that corresponds to the value used to be stored in the DB.
             var oldUID = LoginService.ConvertOldUID(inputAccessCode, response);
             var result = LoginService.Login(oldUID == "" ? inputAccessCode : oldUID, inputPassword, response);
 
@@ -80,12 +81,15 @@ public partial class Users
                     break;
                 case 1:
                     StateContainer.currentUser = LoginService.GetLoggedInUser();
+                    //If the card given is a real UID that corresponds to a converted card, bind it to the user so they can authenticate with it on the webui
                     if (oldUID != "")
                     {
                         Console.WriteLine("Binding " + inputAccessCode);
-                        await LoginService.BindAccessCode(inputAccessCode, Client);
+                        await LoginService.BindAccessCode(inputAccessCode, LoginService.GetLoggedInUser(), Client);
+                        //this is far from ideal, forces the users page to update after editing the AccessCode for current user
+                        NavigationManager.NavigateTo($"/");
                     }
-                    NavigationManager.NavigateTo($"/Users/{StateContainer.currentUser.Baid}/Profile");
+                    NavigationManager.NavigateTo($"/Users/");
                     break;
                 case 2:
                     await DialogService.ShowMessageBox(
