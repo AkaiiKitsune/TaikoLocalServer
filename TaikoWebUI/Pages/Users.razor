@@ -58,9 +58,15 @@
                                     </MudMenuItem>
                                     <MudDivider/>
                                     <MudMenuItem Icon="@Icons.Material.Filled.Lock"
-                                                 Href="@($"Users/{user.Baid}/ChangePassword")"
+                                                 Href="@($"Users/ChangePassword")"
                                                  IconColor="@Color.Primary">
                                         Change Password
+                                    </MudMenuItem>
+                                    <MudDivider/>
+                                    <MudMenuItem Icon="@Icons.Material.Filled.LockReset"
+                                                 OnClick="@(_ => ResetPassword(user))"
+                                                 IconColor="@Color.Primary">
+                                        Reset Password
                                     </MudMenuItem>
                                     @if (LoginService.AllowUserDelete)
                                     {
