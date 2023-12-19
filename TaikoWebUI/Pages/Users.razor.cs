@@ -31,7 +31,8 @@ public partial class Users
             ["user"] = user
         };
 
-        var dialog = DialogService.Show<UserDeleteConfirmDialog>("Delete User", parameters);
+        var options = new DialogOptions() { DisableBackdropClick = true };
+        var dialog = DialogService.Show<UserDeleteConfirmDialog>("Delete User", parameters, options);
         var result = await dialog.Result;
 
         if (result.Canceled) return;
@@ -55,7 +56,8 @@ public partial class Users
             ["user"] = user
         };
 
-        var dialog = DialogService.Show<ResetPasswordConfirmDialog>("Reset Password", parameters);
+        var options = new DialogOptions() { DisableBackdropClick = true };
+        var dialog = DialogService.Show<ResetPasswordConfirmDialog>("Reset Password", parameters, options);
         var result = await dialog.Result;
 
         if (result.Canceled) return;
@@ -134,7 +136,8 @@ public partial class Users
             ["user"] = user
         };
 
-        DialogService.Show<UserQrCodeDialog>("QR Code", parameters);
+        var options = new DialogOptions() { DisableBackdropClick = true };
+        DialogService.Show<UserQrCodeDialog>("QR Code", parameters, options);
 
         return Task.CompletedTask;
     }

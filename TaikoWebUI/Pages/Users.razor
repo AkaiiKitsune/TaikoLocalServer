@@ -41,39 +41,42 @@
                         <MudCardHeader>
                             <CardHeaderContent>
                                 <MudText Typo="Typo.h6" Style="font-weight:bold">Baid: @user.Baid</MudText>
-                                <MudText Typo="Typo.h6">@user.Name</MudText>
-                            </CardHeaderContent>
-                            <CardHeaderActions>
-                                <MudMenu Icon="@Icons.Material.Filled.MoreVert" Dense="true" AnchorOrigin="Origin.BottomLeft"
-                                         TransformOrigin="Origin.TopLeft" Size="Size.Small">
-                                    <MudMenuItem Icon="@Icons.Material.Filled.QrCode"
-                                                 OnClick="@(_ => ShowQrCode(user))"
-                                                 IconColor="@Color.Primary">
-                                        Show QR Code
-                                    </MudMenuItem>
-                                    <MudDivider/>
-                                    <MudMenuItem Icon="@Icons.Material.Filled.FeaturedPlayList"
-                                                 Href="@($"Users/{user.Baid}/AccessCode")"
-                                                 IconColor="@Color.Primary">
-                                        Manage Access Codes
-                                    </MudMenuItem>
-                                    <MudDivider/>
-                                    <MudMenuItem Icon="@Icons.Material.Filled.Lock"
-                                                 Href="@($"Users/ChangePassword")"
-                                                 IconColor="@Color.Primary">
-                                        Change Password
-                                    </MudMenuItem>
-                                    <MudDivider/>
-                                    <MudMenuItem Icon="@Icons.Material.Filled.LockReset"
-                                                 OnClick="@(_ => ResetPassword(user))"
-                                                 IconColor="@Color.Primary">
-                                        Reset Password
-                                    </MudMenuItem>
-                                    @if (LoginService.AllowUserDelete)
+                                    <MudText Typo="Typo.h6">@user.Name</MudText>
+                                </CardHeaderContent>
+                                <CardHeaderActions>
+                                    <MudMenu Icon="@Icons.Material.Filled.MoreVert" Dense="true" AnchorOrigin="Origin.BottomLeft"
+                                             TransformOrigin="Origin.TopLeft" Size="Size.Small">
+                                        <MudMenuItem Icon="@Icons.Material.Filled.QrCode"
+                                                     OnClick="@(_ => ShowQrCode(user))"
+                                                     OnTouch="@(_ => ShowQrCode(user))"
+                                                     IconColor="@Color.Primary">
+                                            Show QR Code
+                                        </MudMenuItem>
+                                        <MudDivider />
+                                        <MudMenuItem Icon="@Icons.Material.Filled.FeaturedPlayList"
+                                                     Href="@($"Users/{user.Baid}/AccessCode")"
+                                                     IconColor="@Color.Primary">
+                                            Manage Access Codes
+                                        </MudMenuItem>
+                                        <MudDivider />
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Lock"
+                                                     Href="@($"Users/ChangePassword")"
+                                                     IconColor="@Color.Primary">
+                                            Change Password
+                                        </MudMenuItem>
+                                        <MudDivider />
+                                        <MudMenuItem Icon="@Icons.Material.Filled.LockReset"
+                                                     OnClick="@(_ => ResetPassword(user))"
+                                                     OnTouch="@(_ => ResetPassword(user))"
+                                                     IconColor="@Color.Primary">
+                                            Reset Password
+                                        </MudMenuItem>
+                                        @if (LoginService.AllowUserDelete)
                                     {
                                         <MudDivider />
                                         <MudMenuItem Icon="@Icons.Material.Filled.Delete"
                                                      OnClick="@(_ => DeleteUser(user))"
+                                                     OnTouch="@(_ => DeleteUser(user))"
                                                      IconColor="@Color.Error">
                                             Delete User
                                         </MudMenuItem>
@@ -156,32 +159,34 @@
                             <MudCardHeader>
                                 <CardHeaderContent>
                                     <MudText Typo="Typo.h6" Style="font-weight:bold">@user.Name</MudText>
-                                </CardHeaderContent>
-                                <CardHeaderActions>
-                                    <MudMenu Icon="@Icons.Material.Filled.MoreVert" Dense="true" AnchorOrigin="Origin.BottomLeft"
-                                             TransformOrigin="Origin.TopLeft" Size="Size.Small">
-                                        <MudMenuItem Icon="@Icons.Material.Filled.QrCode"
-                                                     OnClick="@(_ => ShowQrCode(user))"
-                                                     IconColor="@Color.Primary">
-                                            Show QR Code
-                                        </MudMenuItem>
-                                        <MudDivider/>
-                                        <MudMenuItem Icon="@Icons.Material.Filled.FeaturedPlayList"
-                                                     Href="@($"Users/{user.Baid}/AccessCode")"
-                                                     IconColor="@Color.Primary">
-                                            Manage Access Codes
-                                        </MudMenuItem>
-                                        <MudDivider/>
-                                        <MudMenuItem Icon="@Icons.Material.Filled.Lock"
-                                                     Href="@($"Users/ChangePassword")"
-                                                     IconColor="@Color.Primary">
-                                            Change Password
-                                        </MudMenuItem>
-                                        @if (LoginService.AllowUserDelete)
+                                    </CardHeaderContent>
+                                    <CardHeaderActions>
+                                        <MudMenu Icon="@Icons.Material.Filled.MoreVert" Dense="true" AnchorOrigin="Origin.BottomLeft"
+                                                 TransformOrigin="Origin.TopLeft" Size="Size.Small">
+                                            <MudMenuItem Icon="@Icons.Material.Filled.QrCode"
+                                                         OnClick="@(_ => ShowQrCode(user))"
+                                                         OnTouch="@(_ => ShowQrCode(user))"
+                                                         IconColor="@Color.Primary">
+                                                Show QR Code
+                                            </MudMenuItem>
+                                            <MudDivider />
+                                            <MudMenuItem Icon="@Icons.Material.Filled.FeaturedPlayList"
+                                                         Href="@($"Users/{user.Baid}/AccessCode")"
+                                                         IconColor="@Color.Primary">
+                                                Manage Access Codes
+                                            </MudMenuItem>
+                                            <MudDivider />
+                                            <MudMenuItem Icon="@Icons.Material.Filled.Lock"
+                                                         Href="@($"Users/ChangePassword")"
+                                                         IconColor="@Color.Primary">
+                                                Change Password
+                                            </MudMenuItem>
+                                            @if (LoginService.AllowUserDelete)
                                         {
                                             <MudDivider />
                                             <MudMenuItem Icon="@Icons.Material.Filled.Delete"
                                                          OnClick="@(_ => DeleteUser(user))"
+                                                         OnTouch="@(_ => DeleteUser(user))"
                                                          IconColor="@Color.Error">
                                                 Delete User
                                             </MudMenuItem>

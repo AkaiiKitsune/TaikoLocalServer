@@ -16,10 +16,10 @@
         @if (StateContainer.isConnected)
         {
             <MudMenu TransformOrigin=@Origin.TopRight AnchorOrigin=@Origin.BottomRight Color="Color.Inherit" Icon="@Icons.Material.Filled.MoreVert">
-                <MudMenuItem Icon="@Icons.Material.Filled.Person" OnClick="@((e) => EditProfile())">Game Profile</MudMenuItem>
-                <MudMenuItem Icon="@Icons.Material.Filled.CreditCard" OnClick="@((e) => EditCard())">Access Codes</MudMenuItem>
-                <MudMenuItem Icon="@Icons.Material.Filled.Build" OnClick="@((e) => EditPass())">Edit Password</MudMenuItem>
-                <MudMenuItem Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error" OnClick="@((e) => OnLogout())">Logout</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Person" OnClick="@((e) => EditProfile())" OnTouch="@((e) => EditProfile())">Game Profile</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.CreditCard" OnClick="@((e) => EditCard())" OnTouch="@((e) => EditCard())">Access Codes</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Build" OnClick="@((e) => EditPass())" OnTouch="@((e) => EditPass())">Edit Password</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error" OnClick="@((e) => OnLogout())" OnTouch="@((e) => OnLogout())">Logout</MudMenuItem>
             </MudMenu>
         }
     </MudAppBar>
@@ -58,6 +58,7 @@
             {
                 StateContainer.currentUser = LoginService.GetLoggedInUser();
                 StateContainer.isConnected = true;
+                NavigationManager.NavigateTo("/");
                 NavigationManager.NavigateTo("/Users");
             }
             else
