@@ -5,32 +5,61 @@
 @inject NavigationManager NavigationManager
 @inject ILocalStorage LocalStorage
 
-<MudThemeProvider/>
+<MudThemeProvider @bind-IsDarkMode=StateContainer.darkMode Theme="Taiko" />
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
 <MudLayout>
     <MudAppBar Elevation="0">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+        @if(StateContainer.isConnected){
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+        }
         <MudSpacer />
-        @if (StateContainer.isConnected)
+        <MudButton Class="mx-1" Variant="Variant.Filled" Color="Color.Primary" Href="/Users" StartIcon=@(StateContainer.darkMode ? @Icons.Material.Filled.LightMode : @Icons.Material.Filled.DarkMode) OnClick="@((e) => ToggleDarkMode())"></MudButton>
+        @if (!StateContainer.isConnected)
+        {
+            <MudButton Class="mx-1" Variant="Variant.Filled" Color="Color.Primary" Href="/Users" StartIcon="@Icons.Material.Filled.Login">Login</MudButton>
+            <MudButton Class="mx-1" Variant="Variant.Filled" Color="Color.Primary" Href="/Users/Register" StartIcon="@Icons.Material.Filled.AddCard">Register</MudButton>
+        }
+        else
         {
             <MudMenu TransformOrigin=@Origin.TopRight AnchorOrigin=@Origin.BottomRight Color="Color.Inherit" Icon="@Icons.Material.Filled.MoreVert">
                 <MudMenuItem Icon="@Icons.Material.Filled.Person" OnClick="@((e) => EditProfile())" OnTouch="@((e) => EditProfile())">Game Profile</MudMenuItem>
                 <MudMenuItem Icon="@Icons.Material.Filled.CreditCard" OnClick="@((e) => EditCard())" OnTouch="@((e) => EditCard())">Access Codes</MudMenuItem>
                 <MudMenuItem Icon="@Icons.Material.Filled.Build" OnClick="@((e) => EditPass())" OnTouch="@((e) => EditPass())">Edit Password</MudMenuItem>
-                <MudMenuItem Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error" OnClick="@((e) => OnLogout())" OnTouch="@((e) => OnLogout())">Logout</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error" OnClick="@((e) => Logout())" OnTouch="@((e) => Logout())">Logout</MudMenuItem>
             </MudMenu>
         }
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6">TaikoWebUI</MudText>
-        </MudDrawerHeader>
-        <NavMenu/>
-    </MudDrawer>
+    @if(StateContainer.isConnected){
+        <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
+            <MudDrawerHeader>
+                <MudText Typo="Typo.h6">TaikoWebUI</MudText>
+            </MudDrawerHeader>
+            <MudNavMenu>
+                <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+                @if (StateContainer.currentUser.IsAdmin)
+                {
+                    <MudNavLink Href="@("/Users")" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.PersonSearch">User list</MudNavLink>
+                }
+                <MudNavGroup Title="@StateContainer.currentUser.Name" Icon="@Icons.Material.Filled.Person" >
+                    <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/HighScores")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Equalizer">High Scores</MudNavLink>
+                    <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/DaniDojo")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Grade">Dani Dojo</MudNavLink>
+                    <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/Profile")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Game Profile</MudNavLink>
+                    <MudNavGroup Title="Settings" Icon="@Icons.Material.Filled.Settings">
+                        @if (!StateContainer.currentUser.IsAdmin)
+                        {
+                            <MudNavLink Href="@("/Users")" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Person">User profile</MudNavLink>
+                        }
+                        <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/AccessCode")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.CreditCard">Access Codes</MudNavLink>
+                        <MudNavLink OnClick="@((e) => Logout())" IconColor="Color.Error" Icon="@Icons.Material.Filled.Logout">Logout</MudNavLink>
+                    </MudNavGroup>
+                </MudNavGroup>
+            </MudNavMenu>
+        </MudDrawer>
+    }
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="my-8">
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-8">
             @Body
 
             <MudScrollToTop>
@@ -65,11 +94,12 @@
             {
                 StateContainer.isConnected = false;
                 NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("/Users");
             }
         }
     }
 
-    protected async Task OnLogout()
+    public async Task Logout()
     {
         LoginService.Logout();
         StateContainer.isConnected = false;
@@ -93,6 +123,11 @@
         NavigationManager.NavigateTo("/Users/ChangePassword");
     }
 
+    private void ToggleDarkMode()
+    {
+        StateContainer.darkMode = !StateContainer.darkMode;
+    }
+
     bool _drawerOpen = true;
 
     void DrawerToggle()
@@ -100,4 +135,26 @@
         _drawerOpen = !_drawerOpen;
     }
 
+    @code {
+        MudTheme Taiko = new MudTheme()
+        {
+            Palette = new PaletteLight()
+            {
+                Primary = "#043b42",
+                Secondary = "#feb200",
+                AppbarBackground = "#043b42",
+            },
+            PaletteDark = new PaletteDark()
+            {
+                Primary = "#feb200",
+                Secondary = "#043b42",
+            },
+
+            // LayoutProperties = new LayoutProperties()
+            // {
+            //     DrawerWidthLeft = "260px",
+            //     DrawerWidthRight = "300px"
+            // }
+        };
+    }
 }

@@ -7,7 +7,7 @@
 
 @page "/Users"
 
-<h1>Users</h1>
+@* <h1>Users</h1> *@
 <MudGrid Class="my-8">
     @if (response is null)
     {
@@ -41,7 +41,7 @@
                         <MudCardHeader>
                             <CardHeaderContent>
                                 <MudText Typo="Typo.h6" Style="font-weight:bold">Baid: @user.Baid</MudText>
-                                    <MudText Typo="Typo.h6">@user.Name</MudText>
+                                    <MudText Typo="Typo.h6" Style="font-family: 'Nijiiro'">@user.Name</MudText>
                                 </CardHeaderContent>
                                 <CardHeaderActions>
                                     <MudMenu Icon="@Icons.Material.Filled.MoreVert" Dense="true" AnchorOrigin="Origin.BottomLeft"

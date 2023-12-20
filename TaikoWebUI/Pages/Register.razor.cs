@@ -13,6 +13,7 @@ public partial class Register
     private TimeSpan? time = new TimeSpan(00, 45, 00);
 
     private DashboardResponse? response;
+    private readonly DialogOptions options = new DialogOptions() { DisableBackdropClick = true };
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,35 +36,35 @@ public partial class Register
                     await DialogService.ShowMessageBox(
                         "Error",
                         "Only admin can log in.",
-                        "Ok");
+                        "Ok", null, null, options);
                     NavigationManager.NavigateTo("/Users");
                     break;
                 case 1:
                     await DialogService.ShowMessageBox(
                         "Success",
                         "Access code registered successfully.",
-                        "Ok");
+                        "Ok", null, null, options);
                     NavigationManager.NavigateTo("/Users");
                     break;
                 case 2:
                     await DialogService.ShowMessageBox(
                         "Error",
                         "Confirm password is not the same as password.",
-                        "Ok");
+                        "Ok", null, null, options);
                     break;
                 case 3:
                     await DialogService.ShowMessageBox(
                         "Error",
                         (MarkupString)
                         "Access code not found.<br />Please play one game with this access code to register it.",
-                        "Ok");
+                        "Ok", null, null, options);
                     break;
                 case 4:
                     await DialogService.ShowMessageBox(
                         "Error",
                         (MarkupString)
                         "Access code is already registered, please use set password to login.",
-                        "Ok");
+                        "Ok", null, null, options);
                     NavigationManager.NavigateTo("/Users");
                     break;
                 case 5:
@@ -71,7 +72,7 @@ public partial class Register
                         "Error",
                         (MarkupString)
                         "Wrong last play time.<br />If you have forgotten when you last played, please play another game with this access code.",
-                        "Ok");
+                        "Ok", null, null, options);
                     break;
             }
         }

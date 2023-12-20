@@ -3,6 +3,7 @@
     public class StateContainer
     {
         private bool? _isConnected;
+        private bool? _isDarkMode;
         private User? _currentUser;
 
         public bool isConnected
@@ -22,6 +23,16 @@
             {
                 _currentUser = value;
                 isConnected = true;
+            }
+        }
+
+        public bool darkMode
+        {
+            get => _isDarkMode ?? true;
+            set
+            {
+                _isDarkMode = value;
+                NotifyStateChanged();
             }
         }
 

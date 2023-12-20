@@ -9,6 +9,7 @@ public partial class Users
     private MudForm loginForm = default!;
     private string inputPassword = "";
     private DashboardResponse? response;
+    private readonly DialogOptions options = new DialogOptions() { DisableBackdropClick = true };
 
     protected override async Task OnInitializedAsync()
     {
@@ -23,7 +24,7 @@ public partial class Users
             await DialogService.ShowMessageBox(
                 "Error",
                 "User deletion is disabled by admin.",
-                "Ok");
+                "Ok", null, null, options);
             return;
         }
         var parameters = new DialogParameters
@@ -31,7 +32,6 @@ public partial class Users
             ["user"] = user
         };
 
-        var options = new DialogOptions() { DisableBackdropClick = true };
         var dialog = DialogService.Show<UserDeleteConfirmDialog>("Delete User", parameters, options);
         var result = await dialog.Result;
 
@@ -48,7 +48,7 @@ public partial class Users
             await DialogService.ShowMessageBox(
                 "Error",
                 "Only admin can reset password.",
-                "Ok");
+                "Ok", null, null, options);
             return;
         }
         var parameters = new DialogParameters
@@ -56,7 +56,6 @@ public partial class Users
             ["user"] = user
         };
 
-        var options = new DialogOptions() { DisableBackdropClick = true };
         var dialog = DialogService.Show<ResetPasswordConfirmDialog>("Reset Password", parameters, options);
         var result = await dialog.Result;
 
@@ -80,7 +79,7 @@ public partial class Users
                     await DialogService.ShowMessageBox(
                         "Error",
                         "Only admin can log in.",
-                        "Ok");
+                        "Ok", null, null, options);
                     await loginForm.ResetAsync();
                     break;
                 case 1:
@@ -101,21 +100,21 @@ public partial class Users
                     await DialogService.ShowMessageBox(
                         "Error",
                         "Wrong password!",
-                        "Ok");
+                        "Ok", null, null, options);
                     break;
                 case 3:
                     await DialogService.ShowMessageBox(
                         "Error",
                         (MarkupString)
                         "Access code not found.<br />Please play one game with this access code to register it.",
-                        "Ok");
+                        "Ok", null, null, options);
                     break;
                 case 4:
                     await DialogService.ShowMessageBox(
                         "Error",
                         (MarkupString)
                         "Access code not registered.<br />Please use register button to create a password first.",
-                        "Ok");
+                        "Ok", null, null, options);
                     break;
             }
         }
@@ -136,7 +135,6 @@ public partial class Users
             ["user"] = user
         };
 
-        var options = new DialogOptions() { DisableBackdropClick = true };
         DialogService.Show<UserQrCodeDialog>("QR Code", parameters, options);
 
         return Task.CompletedTask;
