@@ -16,7 +16,7 @@
             <MudText>@StateContainer.currentTitle</MudText>
         }
         <MudSpacer />
-        <MudButton Class="mx-1" Variant="Variant.Filled" Color="Color.Primary" Href="/Users" StartIcon=@(StateContainer.darkMode ? @Icons.Material.Filled.LightMode : @Icons.Material.Filled.DarkMode) OnClick="@((e) => ToggleDarkMode())"></MudButton>
+        @* <MudButton Class="mx-1" Variant="Variant.Filled" Color="Color.Primary" Href="/Users" StartIcon=@(StateContainer.darkMode ? @Icons.Material.Filled.LightMode : @Icons.Material.Filled.DarkMode) OnClick="@((e) => ToggleDarkMode())"></MudButton> *@
         @if (!StateContainer.isConnected)
         {
             <MudButton Class="mx-1" Variant="Variant.Filled" Color="Color.Primary" Href="/Users" StartIcon="@Icons.Material.Filled.Login">Login</MudButton>
@@ -43,7 +43,7 @@
                 {
                     <MudNavLink Href="@("/Users")" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.PersonSearch">User list</MudNavLink>
                 }
-                <MudNavGroup Title="@StateContainer.currentUser.Name" Icon="@Icons.Material.Filled.Person" >
+                <MudNavGroup Expanded=true HideExpandIcon=true Title="@StateContainer.currentUser.Name" Icon="@Icons.Material.Filled.Person" >
                     <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/HighScores")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Equalizer">High Scores</MudNavLink>
                     <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/DaniDojo")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Grade">Dani Dojo</MudNavLink>
                     <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/Profile")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Edit">Game Profile</MudNavLink>

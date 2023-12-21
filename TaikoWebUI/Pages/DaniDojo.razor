@@ -10,7 +10,7 @@
 @{
     StateContainer.currentTitle = "Dani Dojo";
 }
-<MudText Typo="Typo.caption">User: @Baid</MudText>
+@* <MudText Typo="Typo.caption">User: @Baid</MudText> *@
 
 @if (LoginService.LoginRequired && (!LoginService.IsLoggedIn || (LoginService.GetLoggedInUser().Baid != Baid && !LoginService.IsAdmin)))
 {
