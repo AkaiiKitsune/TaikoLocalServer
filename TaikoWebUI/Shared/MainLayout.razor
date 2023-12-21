@@ -13,6 +13,7 @@
     <MudAppBar Elevation="0">
         @if(StateContainer.isConnected){
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+            <MudText>@StateContainer.currentTitle</MudText>
         }
         <MudSpacer />
         <MudButton Class="mx-1" Variant="Variant.Filled" Color="Color.Primary" Href="/Users" StartIcon=@(StateContainer.darkMode ? @Icons.Material.Filled.LightMode : @Icons.Material.Filled.DarkMode) OnClick="@((e) => ToggleDarkMode())"></MudButton>
@@ -24,9 +25,9 @@
         else
         {
             <MudMenu TransformOrigin=@Origin.TopRight AnchorOrigin=@Origin.BottomRight Color="Color.Inherit" Icon="@Icons.Material.Filled.MoreVert">
-                <MudMenuItem Icon="@Icons.Material.Filled.Person" OnClick="@((e) => EditProfile())" OnTouch="@((e) => EditProfile())">Game Profile</MudMenuItem>
-                <MudMenuItem Icon="@Icons.Material.Filled.CreditCard" OnClick="@((e) => EditCard())" OnTouch="@((e) => EditCard())">Access Codes</MudMenuItem>
-                <MudMenuItem Icon="@Icons.Material.Filled.Build" OnClick="@((e) => EditPass())" OnTouch="@((e) => EditPass())">Edit Password</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Edit" Href="@($"Users/{StateContainer.currentUser.Baid}/Profile")">Game Profile</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.FeaturedPlayList" Href="@($"Users/{StateContainer.currentUser.Baid}/AccessCode")"> Access Codes</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Lock" Href="Users/ChangePassword">Edit Password</MudMenuItem>
                 <MudMenuItem Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error" OnClick="@((e) => Logout())" OnTouch="@((e) => Logout())">Logout</MudMenuItem>
             </MudMenu>
         }
@@ -37,7 +38,7 @@
                 <MudText Typo="Typo.h6">TaikoWebUI</MudText>
             </MudDrawerHeader>
             <MudNavMenu>
-                <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+                @* <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink> *@
                 @if (StateContainer.currentUser.IsAdmin)
                 {
                     <MudNavLink Href="@("/Users")" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.PersonSearch">User list</MudNavLink>
@@ -45,13 +46,13 @@
                 <MudNavGroup Title="@StateContainer.currentUser.Name" Icon="@Icons.Material.Filled.Person" >
                     <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/HighScores")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Equalizer">High Scores</MudNavLink>
                     <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/DaniDojo")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Grade">Dani Dojo</MudNavLink>
-                    <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/Profile")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Game Profile</MudNavLink>
+                    <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/Profile")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Edit">Game Profile</MudNavLink>
                     <MudNavGroup Title="Settings" Icon="@Icons.Material.Filled.Settings">
                         @if (!StateContainer.currentUser.IsAdmin)
                         {
                             <MudNavLink Href="@("/Users")" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Person">User profile</MudNavLink>
                         }
-                        <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/AccessCode")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.CreditCard">Access Codes</MudNavLink>
+                        <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/AccessCode")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.FeaturedPlayList">Access Codes</MudNavLink>
                         <MudNavLink OnClick="@((e) => Logout())" IconColor="Color.Error" Icon="@Icons.Material.Filled.Logout">Logout</MudNavLink>
                     </MudNavGroup>
                 </MudNavGroup>
@@ -87,15 +88,13 @@
             {
                 StateContainer.currentUser = LoginService.GetLoggedInUser();
                 StateContainer.isConnected = true;
-                NavigationManager.NavigateTo("/");
-                NavigationManager.NavigateTo("/Users");
             }
             else
             {
                 StateContainer.isConnected = false;
-                NavigationManager.NavigateTo("/");
-                NavigationManager.NavigateTo("/Users");
             }
+            NavigationManager.NavigateTo("/");
+            NavigationManager.NavigateTo("/Users");
         }
     }
 
@@ -106,21 +105,6 @@
         await LocalStorage.RemoveAsync("user");
         await LocalStorage.RemoveAsync("pass");
         NavigationManager.NavigateTo("/Users", forceLoad: true);
-    }
-
-    private void EditProfile()
-    {
-        NavigationManager.NavigateTo("/Users/" + StateContainer.currentUser.Baid + "/Profile");
-    }
-
-    private void EditCard()
-    {
-        NavigationManager.NavigateTo("/Users/"+StateContainer.currentUser.Baid+"/AccessCode");
-    }
-
-    private void EditPass()
-    {
-        NavigationManager.NavigateTo("/Users/ChangePassword");
     }
 
     private void ToggleDarkMode()

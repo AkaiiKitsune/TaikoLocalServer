@@ -6,7 +6,8 @@ public partial class Register
     private string confirmPassword = "";
     private string password = "";
     private MudForm registerForm = default!;
-    
+    private bool isSaving;
+
     private MudDatePicker datePicker = new();
     private MudTimePicker timePicker = new();
     private DateTime? date = DateTime.Today;
@@ -23,6 +24,7 @@ public partial class Register
 
     private async Task OnRegister()
     {
+        isSaving = true;
         var inputDateTime = date!.Value.Date + time!.Value;
         if (response != null)
         {
@@ -76,5 +78,6 @@ public partial class Register
                     break;
             }
         }
+        isSaving = false;
     }
 }

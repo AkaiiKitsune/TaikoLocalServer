@@ -3,12 +3,15 @@
 @inject IGameDataService GameDataService
 @inject IDialogService DialogService
 @inject LoginService LoginService
+@inject StateContainer StateContainer
 @inject IJSRuntime Js
 
 @* <MudBreadcrumbs Items="breadcrumbs" Class="px-0"></MudBreadcrumbs> *@
 
 
-<h1>Profile</h1>
+@{
+    StateContainer.currentTitle = "Profile";
+}
 <MudText Typo="Typo.caption">User: @Baid</MudText>
 
     @if (response is not null)

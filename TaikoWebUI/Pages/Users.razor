@@ -7,7 +7,9 @@
 
 @page "/Users"
 
-@* <h1>Users</h1> *@
+@{
+    StateContainer.currentTitle = "";
+}
 <MudGrid Class="my-8">
     @if (response is null)
     {
@@ -136,13 +138,7 @@
                                                       RequiredError="Password is required"
                                                       Label="Password">
                                         </MudTextField>
-                                        <MudStack Row="true">
-                                            <MudButton OnClick="OnLogin" FullWidth="true" Class="mt-3" StartIcon="@Icons.Material.Filled.Login" Color="Color.Primary" Variant="Variant.Filled">Login</MudButton>
-                                            @if (!LoginService.OnlyAdmin)
-                                            {
-                                                <MudButton Href="@("Users/Register")" FullWidth="true" Class="mt-3" StartIcon="@Icons.Material.Filled.AddCard" Color="Color.Primary" Variant="Variant.Filled">Register</MudButton>
-                                            }
-                                        </MudStack>
+                                        <MudButton OnClick="OnLogin" FullWidth="true" Class="mt-3" StartIcon="@Icons.Material.Filled.Login" Color="Color.Primary" Variant="Variant.Filled">Login</MudButton>
                                     </MudForm>
                                 </MudCardContent>
                             </MudCard>

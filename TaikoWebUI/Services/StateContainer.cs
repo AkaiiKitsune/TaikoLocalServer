@@ -5,6 +5,7 @@
         private bool? _isConnected;
         private bool? _isDarkMode;
         private User? _currentUser;
+        private string? _currentTitle;
 
         public bool isConnected
         {
@@ -32,6 +33,16 @@
             set
             {
                 _isDarkMode = value;
+                NotifyStateChanged();
+            }
+        }
+
+        public string currentTitle
+        {
+            get => _currentTitle ?? "";
+            set
+            {
+                _currentTitle = value;
                 NotifyStateChanged();
             }
         }

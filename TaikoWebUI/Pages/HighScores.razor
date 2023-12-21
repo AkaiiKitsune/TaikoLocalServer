@@ -1,17 +1,20 @@
 ﻿@inject IGameDataService GameDataService
 @inject HttpClient Client
 @inject LoginService LoginService
+@inject StateContainer StateContainer
 
 @page "/Users/{baid:int}/HighScores"
 
 @* <MudBreadcrumbs Items="breadcrumbs" Class="px-0"></MudBreadcrumbs> *@
 
-<h1>High Scores</h1>
-<MudText Typo="Typo.caption">User: @Baid</MudText>
+@{
+    StateContainer.currentTitle = "High Scores";
+}
+@* <MudText Typo="Typo.caption">User: @Baid</MudText> *@
 
 
-<MudGrid Class="my-8">
-    @if (response is null)
+    <MudGrid Class="my-8">
+        @if (response is null)
     {
         <MudItem xs="12">
             <MudText Align="Align.Center">
@@ -41,52 +44,53 @@
                                          Icon="@GetDifficultyIcon(difficulty)">
                                 @if (songBestDataMap.TryGetValue(difficulty, out var value))
                                 {
-                                    <MudDataGrid Items="@value"
-                                                 ColumnResizeMode="ResizeMode.None" RowsPerPage="25" Elevation="0">
+                                    <MudDataGrid FixedHeader="true"
+                                                 Height="calc(100vh - 16rem);" Items="@value"
+                                                 RowsPerPage="25" Elevation="0">
                                         <Columns>
-                                            <TemplateColumn T="SongBestData" Title="Song" StickyLeft="true">
+                                            <TemplateColumn T="SongBestData" Title="Song" StickyLeft="true" Sortable="true" SortBy="x => x.MusicName">
                                                 <CellTemplate>
                                                     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                                                         <div style="width:300px">
                                                             <MudText Typo="Typo.body2" Style="font-weight:bold">@context.Item.MusicName</MudText>
-                                                            <MudText Typo="Typo.caption">@context.Item.MusicArtist</MudText>
-                                                        </div>
-                                                        <div>
-                                                            <MudToggleIconButton Toggled="@context.Item.IsFavorite"
-                                                                                 ToggledChanged="@(async () => await OnFavoriteToggled(context.Item))"
-                                                                                 Icon="@Icons.Material.Filled.FavoriteBorder" Color="@Color.Secondary"
-                                                                                 ToggledIcon="@Icons.Material.Filled.Favorite" ToggledColor="@Color.Secondary"
-                                                                                 Size="Size.Small"
-                                                                                 ToggledSize="Size.Small"
-                                                                                 Title="Add to favorites" ToggledTitle="Remove from favorites"/>
-                                                        </div>
-                                                    </MudStack>
-                                                </CellTemplate>
-                                            </TemplateColumn>
-                                            <TemplateColumn T="SongBestData" Title="Level" Sortable="false">
-                                                <CellTemplate>
-                                                    <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
-                                                        <MudIcon Icon="@Icons.Material.Filled.Star" Size="Size.Small" />
-                                                        <MudText Typo="Typo.caption" Style="line-height:1;margin-top:2px;margin-right:2px;">@GameDataService.GetMusicStarLevel(@context.Item.SongId, difficulty)</MudText>
-                                                    </MudStack>
-                                                </CellTemplate>
-                                            </TemplateColumn>
-                                            <TemplateColumn T="SongBestData" Title="Genre"
-                                                            Sortable="false" Filterable="true">
-                                                <CellTemplate>
-                                                    <MudChip Style="@GetGenreStyle(context.Item.Genre)"
-                                                             Size="Size.Small">
-                                                        @GetGenreTitle(context.Item.Genre)
+                                                                <MudText Typo="Typo.caption">@context.Item.MusicArtist</MudText>
+                                                            </div>
+                                                            <div>
+                                                                <MudToggleIconButton Toggled="@context.Item.IsFavorite"
+                                                                                     ToggledChanged="@(async () => await OnFavoriteToggled(context.Item))"
+                                                                                     Icon="@Icons.Material.Filled.FavoriteBorder" Color="@Color.Primary"
+                                                                                     ToggledIcon="@Icons.Material.Filled.Favorite" ToggledColor="@Color.Primary"
+                                                                                     Size="Size.Small"
+                                                                                     ToggledSize="Size.Small"
+                                                                                     Title="Add to favorites" ToggledTitle="Remove from favorites" />
+                                                            </div>
+                                                        </MudStack>
+                                                    </CellTemplate>
+                                                </TemplateColumn>
+                                                <TemplateColumn T="SongBestData" Title="Level" Sortable="false">
+                                                    <CellTemplate>
+                                                        <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                                                            <MudIcon Icon="@Icons.Material.Filled.Star" Size="Size.Small" />
+                                                            <MudText Typo="Typo.caption" Style="line-height:1;margin-top:2px;margin-right:2px;">@GameDataService.GetMusicStarLevel(@context.Item.SongId, difficulty)</MudText>
+                                                        </MudStack>
+                                                    </CellTemplate>
+                                                </TemplateColumn>
+                                                <TemplateColumn T="SongBestData" Title="Genre"
+                                                                Sortable="true" SortBy="x => x.Genre.ToString()">
+                                                    <CellTemplate>
+                                                        <MudChip Style="@GetGenreStyle(context.Item.Genre)"
+                                                                 Size="Size.Small">
+                                                            @GetGenreTitle(context.Item.Genre)
                                                     </MudChip>
                                                 </CellTemplate>
                                             </TemplateColumn>
-                                            <PropertyColumn Property="data => data.BestScore" Title="Best Score" />
-                                            <TemplateColumn T="SongBestData" Title="Best Crown">
+                                            <PropertyColumn Property="data => data.BestScore" Title="Score" />
+                                            <TemplateColumn T="SongBestData" Title="Crown" Sortable="true" SortBy="x => (int)x.BestCrown">
                                                 <CellTemplate>
                                                     <img src="@($"/images/crown_{context.Item.BestCrown}.png")" alt="@(GetCrownText(context.Item.BestCrown))" title="@(GetCrownText(context.Item.BestCrown))" style="@IconStyle" />
                                                 </CellTemplate>
                                             </TemplateColumn>
-                                            <TemplateColumn T="SongBestData" Title="Best Rank" Sortable="false">
+                                            <TemplateColumn T="SongBestData" Title="Rank" Sortable="true" SortBy="x => (int)x.BestScoreRank">
                                                 <CellTemplate>
                                                     @if (context.Item.BestScoreRank is not ScoreRank.None)
                                                     {
@@ -97,24 +101,24 @@
                                             <PropertyColumn Property="data => data.GoodCount" Title="Good" Sortable="false" />
                                             <PropertyColumn Property="data => data.OkCount" Title="OK" Sortable="false" />
                                             <PropertyColumn Property="data => data.MissCount" Title="Bad" Sortable="false" />
-                                            <PropertyColumn Property="data => data.DrumrollCount" Title="Drumroll" Sortable="false"/>
-                                            <PropertyColumn Property="data => data.ComboCount" Title="MAX Combo" Sortable="false" />
-                                            <TemplateColumn T="SongBestData" Title="AI Battle Data">
+                                            <PropertyColumn Property="data => data.DrumrollCount" Title="Drumroll" Sortable="false" />
+                                            <PropertyColumn Property="data => data.ComboCount" Title="MAX Combo" Sortable="false" style="width:100px" />
+                                           @*  <TemplateColumn T="SongBestData" Title="AI Battle">
                                                 <CellTemplate>
-                                                    <MudButton Variant="Variant.Outlined" Size="Size.Small" 
-                                                               OnClick="@(() => ToggleShowAiData(context.Item))" 
+                                                    <MudButton Variant="Variant.Outlined" Size="Size.Small"
+                                                               OnClick="@(() => ToggleShowAiData(context.Item))"
                                                                Disabled="@(!IsAiDataPresent(context.Item))">
                                                         @(context.Item.ShowAiData ? "Hide" : "Show")
                                                     </MudButton>
                                                 </CellTemplate>
-                                            </TemplateColumn>
+                                            </TemplateColumn> *@
                                             <PropertyColumn Property="data => data.LastPlayTime" Title="Last Played" Hideable="true" />
                                             <PropertyColumn Property="data => data.PlayCount" Title="Total Plays" Hideable="true" />
                                             <PropertyColumn Property="data => data.ClearCount" Title="Total Clears" Hideable="true" />
                                             <PropertyColumn Property="data => data.FullComboCount" Title="Total Full Combos" Hideable="true" />
                                             <PropertyColumn Property="data => data.PerfectCount" Title="Total Donderful Combos" Hideable="true" />
                                         </Columns>
-                                        <ChildRowContent>
+                                       @*  <ChildRowContent>
                                             @if (context.Item.ShowAiData)
                                             {
                                                 <tr>
@@ -139,15 +143,16 @@
                                                             <RowTemplate>
                                                                 <MudTd>@(aiSectionContext.SectionIndex + 1)</MudTd>
                                                                 <MudTd>
-                                                                    @if (@aiSectionContext.IsWin) {
-                                                                        <img src="@($"/images/ai_Win.png")" alt="Win" title="Win" style="@IconStyle" />
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <img src="@($"/images/ai_Lose.png")" alt="Lose" title="Lose" style="@IconStyle" />
-                                                                    }
-                                                                </MudTd>
-                                                                <MudTd>@aiSectionContext.Score</MudTd>
+                                                                    @if (@aiSectionContext.IsWin)
+                                                                {
+                                                                    <img src="@($"/images/ai_Win.png")" alt="Win" title="Win" style="@IconStyle" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <img src="@($"/images/ai_Lose.png")" alt="Lose" title="Lose" style="@IconStyle" />
+                                                                }
+                                                            </MudTd>
+                                                            <MudTd>@aiSectionContext.Score</MudTd>
                                                                 <MudTd>
                                                                     <img src="@($"/images/ai_crown_{aiSectionContext.Crown}.png")" alt="@(GetCrownText(aiSectionContext.Crown))" title="@(GetCrownText(aiSectionContext.Crown))" style="@IconStyle" />
                                                                 </MudTd>
@@ -160,9 +165,9 @@
                                                     </td>
                                                 </tr>
                                             }
-                                        </ChildRowContent>
+                                        </ChildRowContent> *@
                                         <PagerContent>
-                                            <MudDataGridPager T="SongBestData"/>
+                                            <MudDataGridPager T="SongBestData" />
                                         </PagerContent>
                                     </MudDataGrid>
                                 }

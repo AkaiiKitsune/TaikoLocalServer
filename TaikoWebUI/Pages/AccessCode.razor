@@ -2,11 +2,16 @@
 @inject HttpClient Client
 @inject IDialogService DialogService
 @inject LoginService LoginService
+@inject StateContainer StateContainer
 @inject NavigationManager NavigationManager
 
 @* <MudBreadcrumbs Items="breadcrumbs" Class="px-0"></MudBreadcrumbs> *@
 
-<h1>Access Code Management</h1>
+
+@{
+    StateContainer.currentTitle = "Access Code Management";
+}
+
 <MudText Typo="Typo.caption">User: @Baid</MudText>
 
 @if (response is null)

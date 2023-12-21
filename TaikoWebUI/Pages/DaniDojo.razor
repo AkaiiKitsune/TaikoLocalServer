@@ -1,12 +1,15 @@
 ﻿@inject IGameDataService GameDataService
 @inject HttpClient Client
 @inject LoginService LoginService
+@inject StateContainer StateContainer
 
 @page "/Users/{baid:int}/DaniDojo"
 
 @* <MudBreadcrumbs Items="breadcrumbs" Class="px-0"></MudBreadcrumbs> *@
 
-<h1>Dani Dojo</h1>
+@{
+    StateContainer.currentTitle = "Dani Dojo";
+}
 <MudText Typo="Typo.caption">User: @Baid</MudText>
 
 @if (LoginService.LoginRequired && (!LoginService.IsLoggedIn || (LoginService.GetLoggedInUser().Baid != Baid && !LoginService.IsAdmin)))

@@ -1,7 +1,14 @@
-﻿@page "/"
+﻿@inject StateContainer StateContainer
+@page "/"
 
-<h1>Dashboard</h1>
+@{
+    StateContainer.currentTitle = "Dashboard";
+}
 
 <MudText Class="mt-8">
-    Welcome to TaikoWebUI!
+    Welcome to Taiko WebUI!
+</MudText>
+
+<MudText Class="mt-8">
+    Please register or login !
 </MudText>
