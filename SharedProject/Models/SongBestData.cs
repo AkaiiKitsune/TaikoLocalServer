@@ -13,7 +13,11 @@ public class SongBestData
     public string MusicArtist { get; set; } = string.Empty;
     
     public Difficulty Difficulty { get; set; }
-    
+
+    public int Stars { get; set; }
+
+    public bool ShowDetails { get; set; }
+
     public int PlayCount { get; set; }
     public int ClearCount { get; set; }
     public int FullComboCount { get; set; }

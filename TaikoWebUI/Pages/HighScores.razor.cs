@@ -1,5 +1,6 @@
 ﻿using static MudBlazor.Colors;
 using System;
+using static MudBlazor.CategoryTypes;
 
 namespace TaikoWebUI.Pages; 
 
@@ -9,7 +10,9 @@ public partial class HighScores
     public int Baid { get; set; }
 
     private const string IconStyle = "width:25px; height:25px;";
-    
+
+    private string searchString = "";
+
     private SongBestResponse? response;
 
     private Dictionary<Difficulty, List<SongBestData>> songBestDataMap = new();
@@ -31,6 +34,8 @@ public partial class HighScores
             data.Genre = GameDataService.GetMusicGenreBySongId(songId);
             data.MusicName = GameDataService.GetMusicNameBySongId(songId);
             data.MusicArtist = GameDataService.GetMusicArtistBySongId(songId);
+            data.Stars = GameDataService.GetMusicStarLevel(songId, data.Difficulty);
+            data.ShowDetails = false;
         });
         
         songBestDataMap = response.SongBestData.GroupBy(data => data.Difficulty)
@@ -130,11 +135,11 @@ public partial class HighScores
             SongGenre.Pop => "background: #42c0d2; color: #fff",
             SongGenre.Anime => "background: #ff90d3; color: #fff",
             SongGenre.Kids => "background: #fec000; color: #fff",
-            SongGenre.Vocaloid => "background: #ddd",
+            SongGenre.Vocaloid => "background: #ddd; color: #000",
             SongGenre.GameMusic => "background: #cc8aea; color: #fff",
             SongGenre.NamcoOriginal => "background: #ff7027; color: #fff",
             SongGenre.Variety => "background: #1dc83b; color: #fff",
-            SongGenre.Classical => "background: #bfa356",
+            SongGenre.Classical => "background: #bfa356; color: #000",
             _ => ""
         };
     }
@@ -149,6 +154,40 @@ public partial class HighScores
         var aiData = data.AiSectionBestData;
 
         return aiData.Count > 0;
+    }
+
+    public void RowClicked(TableRowClickEventArgs<SongBestData> p)
+    {
+        p.Item.ShowDetails = !p.Item.ShowDetails;
+    }
+
+    private bool FilterFunc(SongBestData element)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Difficulty.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Stars.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.MusicName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.MusicArtist.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Genre.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.BestScore.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (GetCrownText(element.BestCrown).Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (GetRankText(element.BestScoreRank).Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.LastPlayTime.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.AiSectionBestData.Count > 0 && "AI BATTLE".Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.IsFavorite && "Favorite".Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
     }
 }
 
