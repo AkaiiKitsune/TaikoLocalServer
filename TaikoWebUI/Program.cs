@@ -21,6 +21,8 @@ builder.Services.Configure<WebUiSettings>(builder.Configuration.GetSection(nameo
 
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<StateContainer>();
+builder.Services.AddLocalization();
+builder.Services.AddSingleton<MudLocalizer, ResXMudLocalizer>();
 
 var host = builder.Build();
 
