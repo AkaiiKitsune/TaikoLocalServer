@@ -80,7 +80,7 @@
                                                      OnClick="@(_ => DeleteUser(user))"
                                                      OnTouch="@(_ => DeleteUser(user))"
                                                      IconColor="@Color.Error">
-                                            Delete User
+                                            @Localizer["Delete User"]
                                         </MudMenuItem>
                                     }
                                 </MudMenu>
@@ -99,19 +99,19 @@
                                 <MudButton Href="@($"Users/{user.Baid}/Profile")"
                                            Size="Size.Small" Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Edit"
                                            Color="Color.Primary">
-                                    Edit Profile
+                                    @Localizer["edit profile"]
                                 </MudButton>
                                 <MudMenu Size="Size.Small"
                                          Dense="true"
                                          Color="Color.Primary"
-                                         Label="View Play Data"
+                                         Label="@Localizer["view play data"]"
                                          StartIcon="@Icons.Material.Filled.FeaturedPlayList"
                                          EndIcon="@Icons.Material.Filled.KeyboardArrowDown"
                                          FullWidth="true"
                                          AnchorOrigin="Origin.BottomCenter"
                                          TransformOrigin="Origin.TopCenter">
-                                    <MudMenuItem Href="@($"Users/{user.Baid}/HighScores")">High Scores</MudMenuItem>
-                                    <MudMenuItem Href="@($"Users/{user.Baid}/DaniDojo")">Dani Dojo</MudMenuItem>
+                                    <MudMenuItem Href="@($"Users/{user.Baid}/HighScores")">@Localizer["high scores"]</MudMenuItem>
+                                    <MudMenuItem Href="@($"Users/{user.Baid}/DaniDojo")">@Localizer["dani dojo"]</MudMenuItem>
                                 </MudMenu>
                             </MudStack>
                         </MudCardActions>
@@ -230,7 +230,7 @@
     { // No users in the database
         <MudItem xs="12">
             <MudText Align="Align.Center" Class="my-8">
-                No data.
+                @Localizer["No data."]
             </MudText>
         </MudItem>
     }

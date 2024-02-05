@@ -234,7 +234,6 @@ public partial class Profile
                 highestDifficulty = (Difficulty)i;
             }
 
-        response.ThrowIfNull();
         UpdateScores(response.AchievementDisplayDifficulty);
     }
 

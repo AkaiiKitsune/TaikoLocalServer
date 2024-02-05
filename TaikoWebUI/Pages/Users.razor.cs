@@ -1,4 +1,4 @@
-﻿using SharedProject.Models;
+using SharedProject.Models;
 using TaikoWebUI.Pages.Dialogs;
 
 namespace TaikoWebUI.Pages;
@@ -19,6 +19,7 @@ public partial class Users
 
     private async Task DeleteUser(User user)
     {
+        var options = new DialogOptions() { DisableBackdropClick = true };
         if (!LoginService.AllowUserDelete)
         {
             await DialogService.ShowMessageBox(
@@ -38,12 +39,13 @@ public partial class Users
         if (result.Canceled) return;
 
         response = await Client.GetFromJsonAsync<DashboardResponse>("api/Dashboard");
-        if(user.Baid == LoginService.GetLoggedInUser().Baid) await OnLogout();
+        if (user.Baid == LoginService.GetLoggedInUser().Baid) await OnLogout();
     }
 
     private async Task ResetPassword(User user)
     {
-        if (!LoginService.IsAdmin)
+        var options = new DialogOptions() { DisableBackdropClick = true };
+        if (LoginService.LoginRequired && !LoginService.IsAdmin)
         {
             await DialogService.ShowMessageBox(
                 "Error",
@@ -63,7 +65,7 @@ public partial class Users
 
         response = await Client.GetFromJsonAsync<DashboardResponse>("api/Dashboard");
     }
-    
+
     private async Task OnLogin()
     {
         if (response != null)
@@ -127,7 +129,7 @@ public partial class Users
         await LocalStorage.RemoveAsync("pass");
         NavigationManager.NavigateTo("/Users");
     }
-    
+
     private Task ShowQrCode(User user)
     {
         var parameters = new DialogParameters
