@@ -1,4 +1,6 @@
-﻿namespace TaikoWebUI.Pages.Dialogs;
+﻿using ZXing.QrCode.Internal;
+
+namespace TaikoWebUI.Pages.Dialogs;
 
 public partial class AccessCodeDeleteConfirmDialog
 {
@@ -11,6 +13,7 @@ public partial class AccessCodeDeleteConfirmDialog
     
     [Parameter]
     public string AccessCode { get; set; } = "";
+    public string LegacyAccessCode { get; set; } = "";
 
     private void Cancel() => MudDialog.Cancel();
     
@@ -22,8 +25,12 @@ public partial class AccessCodeDeleteConfirmDialog
             MudDialog.Close(DialogResult.Ok(false));
             return;
         }
-        
+
+        LegacyAccessCode = LoginService.ConvertOldUID(AccessCode, new DashboardResponse(), force: true);
+
+
         var cardResponseMessage = await Client.DeleteAsync($"api/Cards/{AccessCode}");
+        if(LegacyAccessCode != "") await Client.DeleteAsync($"api/Cards/{LegacyAccessCode}");
 
         if (!cardResponseMessage.IsSuccessStatusCode)
         {

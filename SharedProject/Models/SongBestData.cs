@@ -33,6 +33,8 @@ public class SongBestData
     
     public DateTime LastPlayTime { get; set; }
 
+    public DateTime BestPlayTime { get; set; }
+
     public bool IsFavorite { get; set; }
     
     public uint GoodCount { get; set; }

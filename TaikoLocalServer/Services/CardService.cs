@@ -34,6 +34,7 @@ public class CardService : ICardService
 		{
 			Baid = (uint)userEntry.Baid,
 			AccessCodes = cardEntries.Where(cardEntry => cardEntry.Baid == userEntry.Baid).Select(cardEntry => cardEntry.AccessCode).ToList(),
+            LastPlayDate = userEntry.LastPlayDatetime,
 			Name = userEntry.MyDonName,
             IsAdmin = userEntry.IsAdmin
 		}).ToList();

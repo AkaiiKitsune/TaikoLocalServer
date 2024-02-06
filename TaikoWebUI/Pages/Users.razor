@@ -39,7 +39,7 @@
             @foreach (var user in response.Users)
             {
                 <MudItem xs="12" md="6" lg="4">
-                    <MudCard Outlined="true">
+                    <MudCard Outlined="true" Style=@(GetRegisterStatus(user) ? "background-color: darkslategray;" : (user.AccessCodes.Count > 1) ? "background-color: indianred;" : "")>
                         <MudCardHeader>
                             <CardHeaderContent>
                                 <MudText Typo="Typo.h6" Style="font-weight:bold">Baid: @user.Baid</MudText>
@@ -87,14 +87,13 @@
                             </CardHeaderActions>
                         </MudCardHeader>
                         <MudCardContent>
-                            <MudText Style="font-weight:bold">Access Code</MudText>
-                            <MudText Style="font-family:monospace;overflow:hidden;overflow-x:scroll">@user.AccessCodes[0]</MudText>
-                                @if (user.AccessCodes.Count > 1)
-                            {
-                                <MudText Style="font-family:monospace;overflow:hidden;overflow-x:scroll">... and @(user.AccessCodes.Count - 1) other access code(s)</MudText>
-                            }
+                            <MudText @onclick="ToggleShowCodes" Style="font-weight:bold">@(showCodes ? user.AccessCodes.FirstOrDefault() : "redacted")</MudText>
+                                <MudText Style="font-family:monospace;overflow:hidden;overflow-x:scroll">... and @(user.AccessCodes.Count - 1) more</MudText>
+                                <br/>
+                            <MudText Style="font-family:monospace;overflow:hidden;overflow-x:scroll">Last seen : @user.LastPlayDate.ToString("dd/MM/yyyy - HH:mm")</MudText>
                         </MudCardContent>
                         <MudCardActions>
+                            
                             <MudStack Row="true" Style="width:100%" Spacing="4" Justify="Justify.FlexEnd">
                                 <MudButton Href="@($"Users/{user.Baid}/Profile")"
                                            Size="Size.Small" Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Edit"

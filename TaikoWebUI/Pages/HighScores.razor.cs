@@ -181,7 +181,7 @@ public partial class HighScores
             return true;
         if (GetRankText(element.BestScoreRank).Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (element.LastPlayTime.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.BestPlayTime.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
         if (element.AiSectionBestData.Count > 0 && "AI BATTLE".Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;

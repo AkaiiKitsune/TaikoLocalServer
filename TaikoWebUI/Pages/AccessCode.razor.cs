@@ -13,13 +13,17 @@ public partial class AccessCode
     private MudForm bindAccessCodeForm = default!;
 
     private User? User { get; set; } = new();
-    
+
+    private List<String> Codes { get; set; } = new();
+    private List<String> InternalCodes { get; set; } = new();
+
     private DashboardResponse? response;
     
     private readonly List<BreadcrumbItem> breadcrumbs = new()
     {
         new BreadcrumbItem("Users", href: "/Users"),
     };
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -44,6 +48,39 @@ public partial class AccessCode
         {
             User = LoginService.GetLoggedInUser();
         }
+
+        Codes = new();
+        InternalCodes = new();
+
+        foreach(String code in User!.AccessCodes)
+        {
+            var oldUID = LoginService.ConvertOldUID(code, response!, force: true);
+            var exists = User.AccessCodes.FirstOrDefault(u => u == oldUID);
+
+            try
+            {
+                exists.ThrowIfNull();
+                Console.WriteLine(code + " is " + oldUID);
+                Codes.Add(code);
+                InternalCodes.Add(oldUID);
+            }
+            catch
+            {
+                Console.WriteLine(code + " has no correspondance");
+            }
+        }
+        foreach (String code in User!.AccessCodes)
+        {
+            if (!InternalCodes.Contains(code) && !Codes.Contains(code))
+            {
+                Codes.Add(code);
+            }
+        }
+
+        foreach (String code in Codes)
+        {
+            Console.WriteLine(code);
+        }
     }
     
     private async Task DeleteAccessCode(string accessCode)
@@ -67,7 +104,12 @@ public partial class AccessCode
     {
         if (response != null)
         {
-            var result = await LoginService.BindAccessCode(inputAccessCode.ToUpper().Trim(), response.Users.First(u => u.Baid == Baid), Client);
+            inputAccessCode = inputAccessCode.ToUpper().Trim();
+            var oldUID = LoginService.ConvertOldUID(inputAccessCode, response, force: true);
+            Console.WriteLine(inputAccessCode + " can be converted to " + oldUID);
+
+            var result = await LoginService.BindAccessCode(inputAccessCode, response.Users.First(u => u.Baid == Baid), Client);
+            await LoginService.BindAccessCode(oldUID, response.Users.First(u => u.Baid == Baid), Client);
             switch (result)
             {
                 case 0:

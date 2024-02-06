@@ -6,6 +6,7 @@ namespace TaikoWebUI.Pages;
 public partial class Users
 {
     private string inputAccessCode = "";
+    private bool showCodes = true;
     private MudForm loginForm = default!;
     private string inputPassword = "";
     private DashboardResponse? response;
@@ -40,6 +41,19 @@ public partial class Users
 
         response = await Client.GetFromJsonAsync<DashboardResponse>("api/Dashboard");
         if (user.Baid == LoginService.GetLoggedInUser().Baid) await OnLogout();
+    }
+
+    private bool GetRegisterStatus(User user)
+    {
+        try
+        {
+            UserCredential credential = response.UserCredentials.Where(credential => credential.Baid == user.Baid).ToList()[0];
+            if (credential.Password == "") return false;
+            else return true;
+        } catch (Exception error){
+            Console.WriteLine("User " + user.Baid + " errored out : " + error);
+            return false;
+        }
     }
 
     private async Task ResetPassword(User user)
@@ -128,6 +142,12 @@ public partial class Users
         await LocalStorage.RemoveAsync("user");
         await LocalStorage.RemoveAsync("pass");
         NavigationManager.NavigateTo("/Users");
+    }
+
+    private void ToggleShowCodes()
+    {
+        showCodes = !showCodes;
+        StateHasChanged();
     }
 
     private Task ShowQrCode(User user)

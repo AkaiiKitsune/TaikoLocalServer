@@ -62,12 +62,14 @@ else
                 </MudCard>
             </MudItem>
             <MudDivider />
-            @for (var idx = 0; idx < User.AccessCodes.Count; idx++)
+            @for (var idx = 0; idx < Codes.Count; idx++)
             {
-                var accessCode = User.AccessCodes[idx];
-                var localIdx = idx + 1;
+                var accessCode = Codes[idx];
+                var oldAccessCode = LoginService.ConvertOldUID(accessCode, response!, force: true);
+                bool isItFucked = InternalCodes.FindAll(code => code == oldAccessCode).Count() > 0 ? false : true;
+                var localIdx = idx;
                 <MudItem xs="12" md="6" lg="4">
-                    <MudCard Outlined="true">
+                    <MudCard Outlined="true" Style=@((oldAccessCode != "" && isItFucked && User.AccessCodes.Count != 1) ? "background-color: indianred;" : "")>
                         <MudCardHeader>
                             <CardHeaderContent>
                                 <MudText Typo="Typo.h6" Style="font-weight:bold">Access Code @localIdx</MudText>
@@ -75,6 +77,14 @@ else
                             </MudCardHeader>
                             <MudCardContent>
                                 <MudText>@accessCode</MudText>
+                                @if (oldAccessCode != "")
+                            {
+                                @if (!isItFucked && User.AccessCodes.Count != 1)
+                                {
+                                    <MudText Style="font-size: smaller;">(@oldAccessCode)</MudText>
+                                }
+                                
+                            }
                             </MudCardContent>
                             <MudCardActions>
                                 <MudButton OnClick="@(_ => DeleteAccessCode(accessCode))"

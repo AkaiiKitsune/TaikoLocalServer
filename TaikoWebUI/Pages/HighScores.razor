@@ -73,7 +73,7 @@
                         <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>x.BestScore)">Score</MudTableSortLabel></MudTh>
                         <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>x.BestCrown)">Crown</MudTableSortLabel></MudTh>
                         <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>x.BestScoreRank)">Rank</MudTableSortLabel></MudTh>
-                        <MudTh Style="text-align:center"><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<SongBestData, object>(x=>x.LastPlayTime)">Last Played</MudTableSortLabel></MudTh>
+                        <MudTh Style="text-align:center"><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<SongBestData, object>(x=>x.BestPlayTime)">Time Played</MudTableSortLabel></MudTh>
                         <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>x.IsFavorite)"></MudTableSortLabel></MudTh>
                         <MudTh Style="text-align:center"></MudTh>
                     </HeaderContent>
@@ -109,7 +109,7 @@
                                 <img src="@($"/images/rank_{context.BestScoreRank}.png")" alt="@(GetRankText(context.BestScoreRank))" title="@(GetRankText(context.BestScoreRank))" style=@IconStyle />
                             }
                         </MudTd>
-                        <MudTd DataLabel="Last Played">@context.LastPlayTime</MudTd>
+                        <MudTd DataLabel="Time Played">@context.BestPlayTime</MudTd>
 
                             <MudTd DataLabel="Favorite" Style="text-align:center">
                                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">

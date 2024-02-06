@@ -14,8 +14,6 @@ public class LoginService
     public bool AllowUserDelete { get; }
     public bool AllowFreeProfileEditing { get; }
 
-    private string NewCardUID = "";
-
     public LoginService(IOptions<WebUiSettings> settings)
     {
         IsLoggedIn = false;
@@ -39,11 +37,11 @@ public class LoginService
         return new string('0', zerosToAdd) + input;
     }
 
-    public string ConvertOldUID(string inputCardNum, DashboardResponse response)
+    public static string ConvertOldUID(string inputCardNum, DashboardResponse response, bool force = false)
     {
         // Convert hexadecimal string to a byte array
         inputCardNum = inputCardNum.ToUpper().Trim();
-        Console.WriteLine(inputCardNum);
+        //Console.WriteLine(inputCardNum);
         try
         {
             byte[] byteArray = new byte[inputCardNum.Length / 2];
@@ -61,12 +59,19 @@ public class LoginService
             //Console.WriteLine($"Hexadecimal: {inputCardNum}");
             //Console.WriteLine($"Decimal: {convertedNumber}");
 
-            NewCardUID = convertedNumber;
-            foreach (var user in response.Users.Where(user => user.AccessCodes.Contains(NewCardUID)))
+            string NewCardUID = convertedNumber;
+            if (!force) {
+                foreach (var user in response.Users.Where(user => user.AccessCodes.Contains(NewCardUID)))
+                {
+                    Console.WriteLine($"This is a new card ! : {inputCardNum} used to be {convertedNumber}");
+                    return convertedNumber;
+                }
+            }
+            else
             {
-                Console.WriteLine($"This is a new card ! : {inputCardNum} used to be {convertedNumber}");
                 return convertedNumber;
             }
+            
         }
         catch { }
         return "";

@@ -69,8 +69,11 @@ public class SongBestDatumService : ISongBestDatumService
                 .IfEmpty();
             var lastPlayLog = songPlayDatums
                 .MaxBy(datum => datum.PlayTime);
+            var bestPlayLog = songPlayDatums
+                .MaxBy(datum => datum.Score);
             bestData.LastPlayTime = lastPlayLog!.PlayTime;
-            
+            bestData.BestPlayTime = bestPlayLog!.PlayTime;
+
             var bestLog = songPlayDatums
                 .MaxBy(datum => datum.Score);
             bestLog.CopyOnlyPropertiesTo(bestData,
