@@ -62,15 +62,12 @@ public class SongBestDatumService : ISongBestDatumService
         var playLogs = await context.SongPlayData.Where(datum => datum.Baid == baid).ToListAsync();
         foreach (var bestData in result)
         {
-            var songPlayDatums = playLogs.Where(datum => datum.Difficulty == bestData.Difficulty &&
-                                                         datum.SongId == bestData.SongId).ToArray();
-            songPlayDatums.Throw($"Play log for song id {bestData.SongId} is null! " +
-                                 "Something is wrong with db!")
-                .IfEmpty();
-            var lastPlayLog = songPlayDatums
-                .MaxBy(datum => datum.PlayTime);
-            var bestPlayLog = songPlayDatums
-                .MaxBy(datum => datum.Score);
+            var songPlayDatums = playLogs.Where(datum => datum.Difficulty == bestData.Difficulty && datum.SongId == bestData.SongId).ToArray();
+            songPlayDatums.Throw($"Play log for song id {bestData.SongId} is null! " + "Something is wrong with db!").IfEmpty();
+
+            var lastPlayLog = songPlayDatums.MaxBy(datum => datum.PlayTime);
+            var bestPlayLog = songPlayDatums.MaxBy(datum => datum.Score);
+
             bestData.LastPlayTime = lastPlayLog!.PlayTime;
             bestData.BestPlayTime = bestPlayLog!.PlayTime;
 
@@ -85,6 +82,29 @@ public class SongBestDatumService : ISongBestDatumService
                 nameof(SongPlayDatum.ComboCount)
             );
 
+            foreach (SongPlayDatum play in songPlayDatums)
+            {
+                SongBestHistory tempPlay = new SongBestHistory();
+                tempPlay.PlayTime = play.PlayTime;
+                tempPlay.BestPlayTime = bestData.BestPlayTime;
+                tempPlay.Rate = play.ScoreRate;
+
+                var tempLog = play;
+                tempLog.CopyOnlyPropertiesTo(tempPlay,
+                    nameof(SongPlayDatum.Score),
+                    nameof(SongPlayDatum.ScoreRank),
+                    nameof(SongPlayDatum.Crown),
+                    nameof(SongPlayDatum.GoodCount),
+                    nameof(SongPlayDatum.OkCount),
+                    nameof(SongPlayDatum.MissCount),
+                    nameof(SongPlayDatum.HitCount),
+                    nameof(SongPlayDatum.DrumrollCount),
+                    nameof(SongPlayDatum.ComboCount)
+                );
+
+                bestData.AllPlays.Add(tempPlay);
+            }
+
             var aiSection = aiSectionBest.FirstOrDefault(datum => datum.Difficulty == bestData.Difficulty &&
                                                          datum.SongId == bestData.SongId);
             if (aiSection is null)
@@ -95,7 +115,6 @@ public class SongBestDatumService : ISongBestDatumService
             bestData.AiSectionBestData = aiSection.AiSectionScoreData
                 .Select(datum => datum.CopyPropertiesToNew<AiSectionBestData>()).ToList();
         }
-
         return result;
     }
 }

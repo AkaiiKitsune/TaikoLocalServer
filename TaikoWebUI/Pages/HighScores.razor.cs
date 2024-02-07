@@ -94,18 +94,6 @@ public partial class HighScores
             };
     }
 
-    private static string GetDifficultyTitle(Difficulty difficulty)
-    {
-        return difficulty switch
-        {
-            Difficulty.Easy => "Easy",
-            Difficulty.Normal => "Normal",
-            Difficulty.Hard => "Hard",
-            Difficulty.Oni => "Oni",
-            Difficulty.UraOni => "Ura Oni",
-            _ => ""
-            };
-    }
 
     private static string GetDifficultyIcon(Difficulty difficulty)
     {
@@ -144,23 +132,22 @@ public partial class HighScores
         };
     }
 
-    private static void ToggleShowAiData(SongBestData data)
-    {
-        data.ShowAiData = !data.ShowAiData;
-    }
-
-    private static bool IsAiDataPresent(SongBestData data)
-    {
-        var aiData = data.AiSectionBestData;
-
-        return aiData.Count > 0;
-    }
 
     public void RowClicked(TableRowClickEventArgs<SongBestData> p)
     {
         p.Item.ShowDetails = !p.Item.ShowDetails;
     }
 
+    private string HighlightBestFunc(SongBestHistory arg1, int index)
+    {
+        switch (arg1.PlayTime.Equals(arg1.BestPlayTime))
+        {
+            case true:
+                return "background-color:darkslategray";
+            case false:
+                return " ";
+        }
+    }
     private bool FilterFunc(SongBestData element)
     {
         if (string.IsNullOrWhiteSpace(searchString))

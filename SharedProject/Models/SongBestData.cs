@@ -35,6 +35,8 @@ public class SongBestData
 
     public DateTime BestPlayTime { get; set; }
 
+    public List<SongBestHistory> AllPlays { get; set; } = new List<SongBestHistory>();
+
     public bool IsFavorite { get; set; }
     
     public uint GoodCount { get; set; }

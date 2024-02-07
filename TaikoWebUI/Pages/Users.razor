@@ -109,6 +109,7 @@
                                          FullWidth="true"
                                          AnchorOrigin="Origin.BottomCenter"
                                          TransformOrigin="Origin.TopCenter">
+                                    <MudMenuItem Href="@($"Users/{user.Baid}/LastPlays")">Last Plays</MudMenuItem>
                                     <MudMenuItem Href="@($"Users/{user.Baid}/HighScores")">@Localizer["high scores"]</MudMenuItem>
                                     <MudMenuItem Href="@($"Users/{user.Baid}/DaniDojo")">@Localizer["dani dojo"]</MudMenuItem>
                                 </MudMenu>
@@ -190,14 +191,6 @@
                                     </MudMenu>
                                 </CardHeaderActions>
                             </MudCardHeader>
-                            <MudCardContent>
-                                <MudText Style="font-weight:bold">Access Code</MudText>
-                                <MudText Style="font-family:monospace;overflow:hidden;overflow-x:scroll">@user.AccessCodes[0]</MudText>
-                                    @if (user.AccessCodes.Count > 1)
-                                {
-                                    <MudText Style="font-family:monospace;overflow:hidden;overflow-x:scroll">... and @(user.AccessCodes.Count - 1) other access code(s)</MudText>
-                                }
-                            </MudCardContent>
                             <MudCardActions>
                                 <MudStack Row="true" Style="width:100%" Spacing="4" Justify="Justify.FlexEnd">
                                     <MudButton Href="@($"Users/{user.Baid}/Profile")"
@@ -214,6 +207,7 @@
                                              FullWidth="true"
                                              AnchorOrigin="Origin.BottomCenter"
                                              TransformOrigin="Origin.TopCenter">
+                                        <MudMenuItem Href="@($"Users/{user.Baid}/LastPlays")">Last Plays</MudMenuItem>
                                         <MudMenuItem Href="@($"Users/{user.Baid}/HighScores")">High Scores</MudMenuItem>
                                         <MudMenuItem Href="@($"Users/{user.Baid}/DaniDojo")">Dani Dojo</MudMenuItem>
                                     </MudMenu>

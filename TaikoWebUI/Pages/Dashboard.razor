@@ -1,14 +1,28 @@
-﻿@inject StateContainer StateContainer
+﻿@inject IGameDataService GameDataService
+@inject HttpClient Client
+@inject LoginService LoginService
+@inject StateContainer StateContainer
 @page "/"
 
 @{
     StateContainer.currentTitle = "Dashboard";
 }
 
-<MudText Class="mt-8">
-    Welcome to Taiko WebUI!
-</MudText>
+@* Show Login text if user is not logged in *@
+@if (!LoginService.IsLoggedIn)
+{
+    <MudText Class="mt-8">
+        Welcome to Taiko WebUI!
+    </MudText>
 
-<MudText Class="mt-8">
-    Please register or login !
-</MudText>
+    <MudText Class="mt-8">
+        Please register or login !
+    </MudText>
+}
+@* if user is logged in, show some data ! *@
+else
+{
+    <MudText>
+        Welcome back, @StateContainer.currentUser.Name
+    </MudText>
+}

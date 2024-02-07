@@ -81,7 +81,10 @@ else
                             {
                                 @if (!isItFucked && User.AccessCodes.Count != 1)
                                 {
-                                    <MudText Style="font-size: smaller;">(@oldAccessCode)</MudText>
+                                    @if (LoginService.IsAdmin)
+                                    {
+                                        <MudText Style="font-size: smaller;">(@oldAccessCode)</MudText>
+                                    }
                                 }
                                 
                             }

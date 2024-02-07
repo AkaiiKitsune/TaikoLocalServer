@@ -38,12 +38,13 @@
                 <MudText Typo="Typo.h6">TaikoWebUI</MudText>
             </MudDrawerHeader>
             <MudNavMenu>
-                @* <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink> *@
+                <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
                 @if (StateContainer.currentUser.IsAdmin)
                 {
                     <MudNavLink Href="@("/Users")" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.PersonSearch">User list</MudNavLink>
                 }
                 <MudNavGroup Expanded=true HideExpandIcon=true Title="@StateContainer.currentUser.Name" Icon="@Icons.Material.Filled.Person" >
+                    <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/LastPlays")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.History">Last Plays</MudNavLink>
                     <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/HighScores")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Equalizer">High Scores</MudNavLink>
                     <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/DaniDojo")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Grade">Dani Dojo</MudNavLink>
                     <MudNavLink Href="@($"Users/{StateContainer.currentUser.Baid}/Profile")" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Edit">Game Profile</MudNavLink>
@@ -82,6 +83,7 @@
 
             var response = await Client.GetFromJsonAsync<DashboardResponse>("api/Dashboard");
             response.ThrowIfNull();
+
             var loginStatus = LoginService.Login(user, pass, response);
 
             if (loginStatus == 1)
@@ -93,8 +95,8 @@
             {
                 StateContainer.isConnected = false;
             }
-            NavigationManager.NavigateTo("/");
             NavigationManager.NavigateTo("/Users");
+            NavigationManager.NavigateTo("/");
         }
     }
 

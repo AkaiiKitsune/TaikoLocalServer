@@ -66,14 +66,14 @@
                         <col style="width:0px;" />
                     </ColGroup>
                     <HeaderContent>
-                        <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>((int)x.Difficulty+1) * 10 + x.Stars)"></MudTableSortLabel></MudTh>
-                        <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>x.Stars * 10 + (int)x.Difficulty)">Level</MudTableSortLabel></MudTh>
+                        <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>((int)x.Difficulty+1) * 10000000 + x.Stars * 1000000 + x.BestScore)"></MudTableSortLabel></MudTh>
+                        <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>x.Stars * 10000000 + (int)x.Difficulty * 1000000 + x.BestScore)">Level</MudTableSortLabel></MudTh>
                         <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>x.MusicName)">Song</MudTableSortLabel></MudTh>
-                        <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>x.Genre.ToString())">Genre</MudTableSortLabel></MudTh>
-                        <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>x.BestScore)">Score</MudTableSortLabel></MudTh>
-                        <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>x.BestCrown)">Crown</MudTableSortLabel></MudTh>
-                        <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>x.BestScoreRank)">Rank</MudTableSortLabel></MudTh>
-                        <MudTh Style="text-align:center"><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<SongBestData, object>(x=>x.BestPlayTime)">Time Played</MudTableSortLabel></MudTh>
+                        <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>x.Genre.ToString() + x.MusicName)">Genre</MudTableSortLabel></MudTh>
+                        <MudTh Style="text-align:center"><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<SongBestData, object>(x=>x.BestScore)">Score</MudTableSortLabel></MudTh>
+                        <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>(int)x.BestCrown * 10000000 + x.BestScore)">Crown</MudTableSortLabel></MudTh>
+                        <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>(int)x.BestScoreRank * 10000000 + x.BestScore)">Rank</MudTableSortLabel></MudTh>
+                        <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>x.BestPlayTime)">Play Date</MudTableSortLabel></MudTh>
                         <MudTh Style="text-align:center"><MudTableSortLabel SortBy="new Func<SongBestData, object>(x=>x.IsFavorite)"></MudTableSortLabel></MudTh>
                         <MudTh Style="text-align:center"></MudTh>
                     </HeaderContent>
@@ -109,7 +109,7 @@
                                 <img src="@($"/images/rank_{context.BestScoreRank}.png")" alt="@(GetRankText(context.BestScoreRank))" title="@(GetRankText(context.BestScoreRank))" style=@IconStyle />
                             }
                         </MudTd>
-                        <MudTd DataLabel="Time Played">@context.BestPlayTime</MudTd>
+                        <MudTd DataLabel="Play Date">@context.BestPlayTime</MudTd>
 
                             <MudTd DataLabel="Favorite" Style="text-align:center">
                                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
@@ -201,6 +201,41 @@
                                                             </RowTemplate>
                                                         </MudTable>
                                                     </MudTabPanel>
+                                            }
+                                            @if (context.AllPlays.Count > 0)
+                                            {
+                                                <MudTabPanel Text=@("History (" + @context.AllPlays.Count + ")")>
+                                                    <MudTable AllowUnsorted="false" Elevation="0" Breakpoint="@Breakpoint.None" ReadOnly="true" Striped="false"
+                                                              Items="@context.AllPlays" T="SongBestHistory" Context="historyList" RowStyleFunc="HighlightBestFunc">
+                                                        <HeaderContent>
+                                                            <MudTh><MudTableSortLabel SortBy="new Func<SongBestHistory, object>(x=>x.Score)">Score</MudTableSortLabel></MudTh>
+                                                            <MudTh><MudTableSortLabel SortBy="new Func<SongBestHistory, object>(x=>(int)x.Crown * 10000000 + x.Score)">Crown</MudTableSortLabel></MudTh>
+                                                            <MudTh><MudTableSortLabel SortBy="new Func<SongBestHistory, object>(x=>(int)x.ScoreRank * 10000000 + x.Score)">Rank</MudTableSortLabel></MudTh>
+                                                            <MudTh><MudTableSortLabel SortBy="new Func<SongBestHistory, object>(x=>x.GoodCount)">Good</MudTableSortLabel></MudTh>
+                                                            <MudTh><MudTableSortLabel SortBy="new Func<SongBestHistory, object>(x=>x.OkCount)">OK</MudTableSortLabel></MudTh>
+                                                            <MudTh><MudTableSortLabel SortBy="new Func<SongBestHistory, object>(x=>x.MissCount)">Bad</MudTableSortLabel></MudTh>
+                                                            <MudTh><MudTableSortLabel SortBy="new Func<SongBestHistory, object>(x=>x.DrumrollCount)">Drumroll</MudTableSortLabel></MudTh>
+                                                            <MudTh><MudTableSortLabel SortBy="new Func<SongBestHistory, object>(x=>x.ComboCount)">Combo</MudTableSortLabel></MudTh>
+                                                            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<SongBestHistory, object>(x=>x.PlayTime)">Play Date</MudTableSortLabel></MudTh>
+                                                        </HeaderContent>
+                                                        <RowTemplate>
+                                                            <MudTd>@(historyList.Score)</MudTd>
+                                                            <MudTd Style="text-align:center"><img src="@($"/images/crown_{historyList.Crown}.png")" alt="@(GetCrownText(historyList.Crown))" title="@(GetCrownText(historyList.Crown))" style=@IconStyle /></MudTd>
+                                                            <MudTd Style="text-align:center">
+                                                                @if (historyList.ScoreRank is not ScoreRank.None)
+                                                                {
+                                                                    <img src="@($"/images/rank_{historyList.ScoreRank}.png")" alt="@(GetRankText(historyList.ScoreRank))" title="@(GetRankText(historyList.ScoreRank))" style=@IconStyle />
+                                                                }
+                                                            </MudTd>
+                                                            <MudTd>@(historyList.GoodCount)</MudTd>
+                                                            <MudTd>@(historyList.OkCount)</MudTd>
+                                                            <MudTd>@(historyList.MissCount)</MudTd>
+                                                            <MudTd>@(historyList.DrumrollCount)</MudTd>
+                                                            <MudTd>@(historyList.ComboCount)</MudTd>
+                                                            <MudTd>@(historyList.PlayTime)</MudTd>
+                                                        </RowTemplate>
+                                                    </MudTable>
+                                                </MudTabPanel>
                                             }
                                         </MudTabs>
                                     </MudCardHeader>
